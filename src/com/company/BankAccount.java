@@ -1,50 +1,43 @@
 package com.company;
 
 import java.util.Date;
-enum CoinType{
-    Dollar,
-    Ruble,
-    Euro
-}
+
 
 public class BankAccount {
 
     private Date date;
-    private Double Balance = 0.0;
+    private Double balance;
     private Integer ID;
-    private String CoinType;
+    private CoinType coinType;
 
     public Double getBalance() {
-        return Balance;
+        return balance;
     }
 
     public void setBalance(Double balance) {
-        Balance = balance;
+        this.balance = balance;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public String getCoinType() {
-        return CoinType;
+    public CoinType getCoinType() {
+        return coinType;
     }
 
     public Integer getID() {
         return ID;
     }
 
-    BankAccount(String type){
+    BankAccount(CoinType coinType){
         date = new Date();
-        CoinType = type;
-        ID =10;
+        this.coinType = coinType;
+        ID = 10;
     }
 
-    public void Deposit(Double Sum){
-        setBalance(Sum + getBalance());
+    public void Deposit(Double sum){
+        setBalance(sum + getBalance());
     }
-
-
-
 
 }
