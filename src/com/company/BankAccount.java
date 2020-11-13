@@ -7,7 +7,7 @@ public class BankAccount {
 
     private Date date;
     private Double balance;
-    private Integer ID;
+    private Integer id;
     private CoinType coinType;
 
     public Double getBalance() {
@@ -26,14 +26,14 @@ public class BankAccount {
         return coinType;
     }
 
-    public Integer getID() {
-        return ID;
+    public Integer getId() {
+        return id;
     }
 
     BankAccount(CoinType coinType){
         date = new Date();
         this.coinType = coinType;
-        ID = 10;
+        id = 10;
     }
 
     public void Deposit(Double sum){
