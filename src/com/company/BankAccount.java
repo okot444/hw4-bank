@@ -1,25 +1,21 @@
 package com.company;
 
 import java.util.Date;
-enum CoinType{
-    Dollar,
-    Ruble,
-    Euro
-}
+
 
 public class BankAccount {
 
     private Date date;
-    private Double Balance = 0.0;
-    private Integer ID;
-    private String CoinType;
+    private Double balance = 0.0;
+    private Integer id;
+    private String coinType;
 
     public Double getBalance() {
-        return Balance;
+        return balance;
     }
 
     public void setBalance(Double balance) {
-        Balance = balance;
+        this.balance = balance;
     }
 
     public Date getDate() {
@@ -27,23 +23,37 @@ public class BankAccount {
     }
 
     public String getCoinType() {
-        return CoinType;
+        return coinType;
     }
 
     public Integer getID() {
-        return ID;
+        return id;
     }
 
     BankAccount(String type){
         date = new Date();
-        CoinType = type;
-        ID =10;
+        coinType = type;
+        id = 10;
     }
 
     public void Deposit(Double Sum){
         setBalance(Sum + getBalance());
     }
 
+    public void Withdraw(Double Sum){
+        setBalance(getBalance() - Sum);
+    }
+
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "date=" + date +
+                ", Balance=" + balance +
+                ", ID=" + id +
+                ", CoinType='" + coinType + '\'' +
+                '}';
+    }
 
 
 
