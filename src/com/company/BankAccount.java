@@ -6,9 +6,9 @@ import java.util.Date;
 public class BankAccount {
 
     private Date date;
-    private Double balance = 0.0;
-    private Integer id;
-    private String coinType;
+    private Double balance;
+    private Integer ID;
+    private CoinType coinType;
 
     public Double getBalance() {
         return balance;
@@ -22,39 +22,22 @@ public class BankAccount {
         return date;
     }
 
-    public String getCoinType() {
+    public CoinType getCoinType() {
         return coinType;
     }
 
     public Integer getID() {
-        return id;
+        return ID;
     }
 
-    BankAccount(String type){
+    BankAccount(CoinType coinType){
         date = new Date();
-        coinType = type;
-        id = 10;
+        this.coinType = coinType;
+        ID = 10;
     }
 
-    public void Deposit(Double Sum){
-        setBalance(Sum + getBalance());
+    public void Deposit(Double sum){
+        setBalance(sum + getBalance());
     }
-
-    public void Withdraw(Double Sum){
-        setBalance(getBalance() - Sum);
-    }
-
-
-    @Override
-    public String toString() {
-        return "BankAccount{" +
-                "date=" + date +
-                ", Balance=" + balance +
-                ", ID=" + id +
-                ", CoinType='" + coinType + '\'' +
-                '}';
-    }
-
-
 
 }
