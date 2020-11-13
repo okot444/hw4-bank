@@ -8,7 +8,6 @@ enum CoinType{
 }
 
 public class BankAccount {
-    
 
     private Date date;
     private Double Balance = 0.0;
@@ -38,7 +37,7 @@ public class BankAccount {
     BankAccount(String type){
         date = new Date();
         CoinType = type;
-        ID =
+        ID =10;
     }
 
     public void Deposit(Double Sum){
