@@ -1,13 +1,16 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class BankAccount {
+public class BankAccount implements Serializable {
+    private static final long serialVersionUID = 2L;
+    private static int lastID = 1;
 
     private Date date;
     private Double balance;
-    private Integer id;
+    private int id;
     private CoinType coinType;
 
     public Double getBalance() {
@@ -33,11 +36,26 @@ public class BankAccount {
     BankAccount(CoinType coinType){
         date = new Date();
         this.coinType = coinType;
-        id = 10;
+        lastID++;
+        id = lastID;
+
     }
 
-    public void Deposit(Double sum){
+    public void deposit(Double sum){
         setBalance(sum + getBalance());
     }
 
+    public void withdraw(Double sum){
+        setBalance(getBalance() - sum);
+    }
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "date=" + date +
+                ", balance=" + balance +
+                ", id=" + id +
+                ", coinType=" + coinType +
+                '}';
+    }
 }
