@@ -33,10 +33,13 @@ public class Owner implements Serializable {
     public void openAccount(CoinType type){
         BankAccount newBankAccount = new BankAccount(type);
         accounts.add(newBankAccount);
+        history.addRecord(name, "Account created", newBankAccount.getId(), null);
     }
     public void closeAccount(BankAccount bankAccount)
     {
+        history.addRecord(name, "Account closed", bankAccount.getId(), null);
         accounts.remove(bankAccount);
+
     }
     public void getOperationHistory(){
         System.out.println(history);

@@ -3,9 +3,9 @@ package com.company;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Queue;
 
 public class OperationsHistory implements Serializable {
+    private static final long serialVersionUID = 1L;
     private ArrayList<OperationRecord> operationsHistory;
 
     public void getRecords(){

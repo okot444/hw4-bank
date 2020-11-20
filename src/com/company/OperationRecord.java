@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class OperationRecord implements Serializable {
-    private static final long serialVersionUID = 3L;
+    private static final long serialVersionUID = 1L;
 
     private String operationType;
     private int bankAccountID;
@@ -24,11 +24,11 @@ public class OperationRecord implements Serializable {
     @Override
     public String toString() {
         return "Operation Record{" +
-                "operation Type='" + operationType + '\'' +
-                ", bank Account ID=" + bankAccountID +
-                ", payment Sender='" + paymentSender + '\'' +
-                ", date=" + date +
-                ", sum=" + sum +
+                "operation Type ='" + operationType + '\'' +
+                ", bank Account ID =" + bankAccountID +
+                ", Account owner ='" + paymentSender + '\'' +
+                ", date =" + date +
+                ", sum =" + sum +
                 '}';
     }
 }

@@ -5,7 +5,7 @@ import java.util.Date;
 
 
 public class BankAccount implements Serializable {
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 1L;
     private static int lastID = 1;
 
     private Date date;
@@ -46,7 +46,11 @@ public class BankAccount implements Serializable {
     }
 
     public void withdraw(Double sum){
-        setBalance(getBalance() - sum);
+
+        if (balance - sum >0)
+            setBalance(getBalance() - sum);
+        else
+            System.out.println("Not enough money");
     }
 
     @Override
