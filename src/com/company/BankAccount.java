@@ -2,11 +2,13 @@ package com.company;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 
 
 public class BankAccount implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static int lastID = 1;
+    //private static int lastID = 1;
+    private static Random rand = new Random();
 
     private Date date;
     private Double balance;
@@ -33,25 +35,29 @@ public class BankAccount implements Serializable {
         return id;
     }
 
-    BankAccount(CoinType coinType){
+    public BankAccount(CoinType coinType){
         date = new Date();
         this.coinType = coinType;
-        lastID++;
-        id = lastID;
-
+        id = Math.abs((int)System.currentTimeMillis()) + rand.nextInt(100);
+        //lastID++;
+        balance = 0.0;
     }
 
     public void deposit(Double sum){
         setBalance(sum + getBalance());
     }
 
-    public void withdraw(Double sum){
+    public boolean withdraw(Double sum){
 
-        if (balance - sum >0)
+        if (balance - sum > 0) {
             setBalance(getBalance() - sum);
-        else
-            System.out.println("Not enough money");
+            return true;
+        }
+        else {
+            return false;
+        }
     }
+
 
     @Override
     public String toString() {

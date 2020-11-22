@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class OperationsHistory implements Serializable {
     private static final long serialVersionUID = 1L;
-    private ArrayList<OperationRecord> operationsHistory;
+    private ArrayList<OperationRecord> operationsHistory = new ArrayList<>();
 
     public void getRecords(){
         for (OperationRecord str : operationsHistory)
