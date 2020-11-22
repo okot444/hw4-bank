@@ -6,14 +6,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import java.util.Set;
+
+import java.awt.*;
+import java.util.ArrayList;
 import java.io.File;
 
-import static javafx.application.Application.launch;
 
 public class BankFrame extends Application {
     private Bank bank;
@@ -37,8 +43,8 @@ public class BankFrame extends Application {
         }
 
         primaryStage.setTitle("Банк");
-        primaryStage.setHeight(600);
-        primaryStage.setWidth(600);
+        primaryStage.setHeight(800);
+        primaryStage.setWidth(800);
         primaryStage.setScene(mainScene);
         primaryStage.initStyle(StageStyle.UNDECORATED);
 
@@ -46,9 +52,15 @@ public class BankFrame extends Application {
     }
 
     private VBox initAccountPage(Owner checkedOwner) {
-        Label ownerLabel = new Label("Владелец аккаунта:");
+
+        // регистрация клиента
+        Label ownerLabel = new Label("Добро пожаловать, ");
         Label ownerValue = new Label(checkedOwner.getName());
         HBox ownerBox = new HBox(5, ownerLabel, ownerValue);
+        ownerBox.setStyle("-fx-background-color : #CBCCFF");
+        Button allAccounts = new Button("Получить сводную информацию по всем счетам");
+        allAccounts.setOnAction(event -> showInfo(checkedOwner.printInfo()));
+
 
         Label createAccLabel = new Label("Создать новый аккунт в валюте");
         ObservableList<CoinType> currency = FXCollections.observableArrayList(CoinType.Dollar, CoinType.Euro, CoinType.Ruble);
@@ -61,11 +73,11 @@ public class BankFrame extends Application {
             Tab tabAcc = new Tab(bankAccount.getId().toString());
             tabAcc.setOnClosed(event -> checkedOwner.closeAccount(bankAccount));
             tabPaneForAcc.getTabs().add(tabAcc);
-            tabAcc.setContent(initTabContent(bankAccount));
-            //checkedOwner.showInfo();
+            tabAcc.setContent(initTabContent(checkedOwner,bankAccount));
         });
         HBox createAccBox = new HBox(10, createAccLabel, currencyComboBox, createAccButton);
 
+        // информация для владельца о его счетах
         Label fromTransferLabel = new Label("Перевести со счета:");
         TextField fromTransferTextField = new TextField();
         Label toTransferLabel = new Label("На счёт:");
@@ -81,21 +93,42 @@ public class BankFrame extends Application {
             if (f) {
                 for (Tab tab : tabPaneForAcc.getTabs()) {
                     BankAccount bankAccount = checkedOwner.getBankAccountById(Integer.parseInt(tab.getText()));
-                    tab.setContent(initTabContent(bankAccount));
+                    tab.setContent(initTabContent(checkedOwner,bankAccount));
                 }
             } else {
-                showInfo("Недостаточно средств/разная валюта");
+                showInfo("Во время операции возникла ошибка. Проверьте правильность ввода номеров счетов или баланс на карте. На данный момент перевод между счетами разных валют не поддерживается.");
             }
-
         });
+
         HBox transferMoneyBox = new HBox(10, fromTransferLabel, fromTransferTextField, toTransferLabel, toTransferTextField, moneyForTransferLabel, moneyForTransfer, transferButton);
 
-        VBox root = new VBox(20, initMenuBar(), ownerBox, tabPaneForAcc, createAccBox, transferMoneyBox);
+        Label operationFieldsName = new Label("Тип операции        "+"Номер счета       "+"Дата операции                               "+"Сумма   "+"Валюта");
 
-        return root;
+        Label operationLabel = new Label();
+        Button operationHistoryButton = new Button("Обновить историю операций");
+        operationHistoryButton.setOnAction(event -> {
+            operationLabel.setText(initHistoryLabel(checkedOwner.getOperationHistory()));
+        });
+        Label historyLabel = new Label("История операций:");
+        HBox operationHistoryBox = new HBox(10, operationLabel);
+
+        ScrollPane historyScrollPane = new ScrollPane();
+        historyScrollPane.setContent(operationHistoryBox);
+        historyScrollPane.setMaxHeight(300);
+
+
+        return new VBox(20, initMenuBar(), ownerBox,allAccounts, tabPaneForAcc, createAccBox, transferMoneyBox,historyLabel,operationHistoryButton,operationFieldsName,historyScrollPane);
+
+    }
+    private String initHistoryLabel(ArrayList<OperationRecord> history){
+        String text="";
+        for (OperationRecord i : history) {
+            text = text + i.getOperationType() + "\t" + i.getBankAccountID() + "\t" + i.getDate() +"\t" + i.getSum() + "\t" + i.getCoinType() + "\n";
+        }
+        return text;
     }
 
-    private VBox initTabContent(BankAccount bankAccount) {
+    private VBox initTabContent(Owner owner, BankAccount bankAccount) {
         Label idLabel = new Label("Номер счёта: " + bankAccount.getId());
         Label dateLabel = new Label("Дата создания: " + bankAccount.getDate());
         Label balanceLabel = new Label("Баланс: " + bankAccount.getBalance() + " " + bankAccount.getCoinType());
@@ -111,7 +144,7 @@ public class BankFrame extends Application {
                     showInfo("Недопустимый ввод");
                     moneyTextField.setText("");
                 } else {
-                    bankAccount.deposit(Double.parseDouble(moneyTextField.getText()));
+                    owner.deposit(Double.parseDouble(moneyTextField.getText()),bankAccount);
                     balanceLabel.setText("Баланс: " + bankAccount.getBalance() + " " + bankAccount.getCoinType());
                     moneyTextField.setText("");
                 }
@@ -127,7 +160,7 @@ public class BankFrame extends Application {
                     showInfo("Недопустимый ввод");
                     moneyTextField.setText("");
                 } else {
-                    boolean f = bankAccount.withdraw(Double.parseDouble(moneyTextField.getText()));
+                    boolean f = owner.withdraw(Double.parseDouble(moneyTextField.getText()),bankAccount);
                     if (f) {
                         balanceLabel.setText("Баланс: " + bankAccount.getBalance() + " " + bankAccount.getCoinType());
                         moneyTextField.setText("");
@@ -143,9 +176,11 @@ public class BankFrame extends Application {
         });
         HBox addMoneyBox = new HBox(5, addMoneyLabel, moneyTextField, addMoneyCurrency, addMoneyButton, subtractMoneyButton);
 
-        VBox tabBox = new VBox(10, idLabel, dateLabel, balanceLabel, addMoneyBox);
+        VBox root = new VBox(10, idLabel, dateLabel, balanceLabel, addMoneyBox);
+        root.setStyle("-fx-background-color : lavender");
 
-        return tabBox;
+
+        return root;
     }
 
     private VBox initLoginPage() {
@@ -162,9 +197,7 @@ public class BankFrame extends Application {
             }
         });
 
-        VBox root = new VBox(10, initMenuBar(), loginBox, loginButton);
-
-        return root;
+        return new VBox(10, initMenuBar(), loginBox, loginButton);
     }
 
     private MenuBar initMenuBar() {
@@ -241,7 +274,7 @@ public class BankFrame extends Application {
                 Tab tabAcc = new Tab(acc.getId().toString());
                 tabAcc.setOnClosed(event -> checkedOwner.closeAccount(acc));
                 tabPaneForAcc.getTabs().add(tabAcc);
-                tabAcc.setContent(initTabContent(acc));
+                tabAcc.setContent(initTabContent(checkedOwner,acc));
             }
         } else {
             String response = showAlert("Пользователя не существует, создать пользователя с таким именем?", "Пользователя не существует");

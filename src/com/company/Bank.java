@@ -2,9 +2,7 @@ package com.company;
 
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Bank {
@@ -36,11 +34,11 @@ public class Bank {
         ownersList.add(owner);
     }
 
-    public void showOwners() {
-        for (Owner owner : ownersList) {
-            owner.showInfo();
-        }
-    }
+//    public void showOwners() {
+//        for (Owner owner : ownersList) {
+//            owner.showInfo();
+//        }
+//    }
 
     public Owner checkOwner(String name) {
         for (Owner owner : ownersList) {

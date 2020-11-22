@@ -7,13 +7,18 @@ import java.util.Random;
 
 public class BankAccount implements Serializable {
     private static final long serialVersionUID = 1L;
-    //private static int lastID = 1;
     private static Random rand = new Random();
-
     private Date date;
     private Double balance;
     private int id;
     private CoinType coinType;
+
+    public BankAccount(CoinType coinType){
+        date = new Date();
+        this.coinType = coinType;
+        id = Math.abs((int)System.currentTimeMillis()) + rand.nextInt(100);
+        balance = 0.0;
+    }
 
     public Double getBalance() {
         return balance;
@@ -35,14 +40,6 @@ public class BankAccount implements Serializable {
         return id;
     }
 
-    public BankAccount(CoinType coinType){
-        date = new Date();
-        this.coinType = coinType;
-        id = Math.abs((int)System.currentTimeMillis()) + rand.nextInt(100);
-        //lastID++;
-        balance = 0.0;
-    }
-
     public void deposit(Double sum){
         setBalance(sum + getBalance());
     }
@@ -59,6 +56,9 @@ public class BankAccount implements Serializable {
     }
 
 
+
+
+
     @Override
     public String toString() {
         return "BankAccount{" +
@@ -68,4 +68,9 @@ public class BankAccount implements Serializable {
                 ", coinType=" + coinType +
                 '}';
     }
+
+    public String printAmountMoney() {
+        return String.format("%f %s", getBalance(), getCoinType());
+    }
+
 }
